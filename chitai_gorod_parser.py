@@ -24,8 +24,13 @@ def write_csv(data):
 		writer.writerow(data)
 write_csv(['publisher', 'year', 'pages', 'height', 'lenght', 'width', 'cover_type', 'edition', 'weight', 'book_pg', 'title', 'author', 'genre', 'price'])
 
+# With assumption of indexes of the books are (presumably) are in range of 1200001 - 1299999.
+# Browsing the urls with 11xxxxx in the catalog are barely returns code 200, 404 most of all.
+# I don't know how their catalog built, but it's a mess, books, pens, pencils, notebooks etc., everything in one place.
+# Thus, the dataset will be very dirty, with all these garbage.
+
 for number in range(0, 99999):
-	url = 'https://www.chitai-gorod.ru/catalog/book/11{:05d}'.format(number)
+	url = 'https://www.chitai-gorod.ru/catalog/book/12{:05d}'.format(number)
 
 	try:
 		print(url + ' code: ' + str(url_code(url)))
