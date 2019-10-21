@@ -22,12 +22,12 @@ def write_csv(data):
 		#encoding utf-16 - we are in russia, thats all
 		writer = csv.writer(f, delimiter=';')
 		writer.writerow(data)
-write_csv(['title', 'author', 'year', 'publisher', 'genre', 'pages', 'weight', 'height', 'lenght', 'width', 'price'])
+write_csv(['id', 'title', 'author', 'year', 'publisher', 'genre', 'pages', 'weight', 'height', 'lenght', 'width', 'price'])
 
 # here comes a more handy approach. labirint has (god thank you) a simple indexing of all the books starting from 1 and to infinity.
 # thus, i will try not die waiting and collect as much as possible.
 
-for number in range(100000, 100050):
+for number in range(400000, 500000):
 	url = 'https://www.labirint.ru/books/{}'.format(str(number))
 
 	try:
@@ -92,9 +92,11 @@ for number in range(100000, 100050):
 			except:
 				price = ''
 
+			print('ID: ', number)
+
 			print()
 
-			write_csv([title, author, year, publisher, genre, pages, weight, height, lenght, width, price])	
+			write_csv([number, title, author, year, publisher, genre, pages, weight, height, lenght, width, price])	
 
 	except:
 		pass
