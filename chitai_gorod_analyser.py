@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from scipy import stats
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -29,7 +30,21 @@ print('Height of additional (big) shelves (plus 3 cm.) = ', round((height.max() 
 print(height[height > bins[1]].count())
 print(height[height < bins[1]].count())
 
-sns.distplot(height, bins=2)
-# sns.jointplot(x='height', y='length', data=df)
+prices = df[(df['price'] < df['price'].quantile(.9)) & (df['price'] > df['price'].quantile(.1))]['price'].dropna()
+hist, bins = np.histogram(prices)
+print('')
+print(hist)
+print(np.where(hist == hist.max()))
+print(bins)
+print('Most common price = ', np.average([bins[np.where(hist == hist.max())[0]], bins[np.where(hist == hist.max())[0] + 1]]))
+print('Median price = ', np.median(prices.array))
+print('Average price = ', np.mean(prices.array))
 
-plt.show()
+print(df.groupby(by='author').count()['title'].sort_values(ascending=False).head())
+
+# sns.distplot(prices.array, bins=10)
+# sns.distplot(height, bins=2)
+# sns.jointplot(x='height', y='length', data=df)
+# plt.show()
+
+
