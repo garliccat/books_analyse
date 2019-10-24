@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set()
 
+from sklearn.linear_model import LinearRegression
+
 df = pd.read_csv('chitai_gorod_dataset.csv', sep=';', encoding='utf-16')
 
 print('Количество записей: ', df.shape[0])
@@ -22,8 +24,8 @@ print('Количество записей: ', df.shape[0])
 df = df[(df['height'] < df['height'].quantile(.999)) & (df['height'] > df['height'].quantile(.001))]
 df = df[(df['weight'] < df['weight'].quantile(.999)) & (df['weight'] > df['weight'].quantile(.001))]
 
-sns.pairplot(df[['height', 'length', 'weight']], kind='reg')
-plt.show()
+# sns.pairplot(df[['height', 'length', 'weight']], kind='reg')
+# plt.show()
 
 height = df['height'].dropna()
 hist, bins = np.histogram(height, bins=2)
@@ -64,7 +66,24 @@ print(df.groupby(by='book_pg').count()['title'].sort_values(ascending=False).hea
 
 print('\nСамые дорогие книги (топ 10):')
 print(df.sort_values(by='price', ascending=False)[['author', 'title', 'price']].head(10))
-sns.regplot(x='weight', y='price', data=df)
+
+'''
+Посмотрим как зависит стоймость книги от её веса (очевидно что весьма прямая зависимость)
+Обучаем линейный регрессор:
+'''
+model = LinearRegression(fit_intercept=True)
+X = df['weight'].to_numpy()[:, np.newaxis]
+y = df['price'].to_numpy()
+model.fit(X, y)
+print(model.coef_, model.intercept_)
+xfit = np.linspace(0, X.max() * 1.05)
+Xfit = xfit[:, np.newaxis]
+yfit = model.predict(Xfit)
+print('Минимально возможная стоймость книги (при весе 0 гр.) =', model.intercept_)
+print('Если бы продавали на вес, то 1 гр. книг стоил бы = ', model.coef_)
+
+sns.scatterplot(x='weight', y='price', data=df)
+sns.lineplot(x=xfit, y=yfit)
 plt.show()
 
 # sns.distplot(prices.array, bins=10)
